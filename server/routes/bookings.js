@@ -24,7 +24,95 @@ router.post('/', auth, async (req, res) => {
     const bookingItems = [];
 
     for (const item of items) {
-      const product = await Product.findById(item.productId);
+      // If using static product data, search by string ID
+      let product;
+      if (item.productId.length !== 24) {
+        // This is not a MongoDB ObjectId, so it's likely a static product
+        const staticProducts = [
+          {
+            _id: '1',
+            name: 'Rice (5kg)',
+            price: 250,
+            category: 'Grains',
+            image: '🌾',
+            description: 'Premium quality rice, perfect for daily meals',
+            inStock: true
+          },
+          {
+            _id: '2',
+            name: 'Wheat Flour (2kg)',
+            price: 120,
+            category: 'Grains',
+            image: '🌾',
+            description: 'Fresh wheat flour for making soft chapatis and breads',
+            inStock: true
+          },
+          {
+            _id: '3',
+            name: 'Cooking Oil (1L)',
+            price: 180,
+            category: 'Cooking',
+            image: '🫒',
+            description: 'Pure cooking oil, ideal for all cooking needs',
+            inStock: true
+          },
+          {
+            _id: '4',
+            name: 'Sugar (1kg)',
+            price: 45,
+            category: 'Sweeteners',
+            image: '🍚',
+            description: 'Refined sugar, perfect for sweetening your tea and desserts',
+            inStock: true
+          },
+          {
+            _id: '5',
+            name: 'Salt (1kg)',
+            price: 25,
+            category: 'Spices',
+            image: '🧂',
+            description: 'Iodized salt, essential for cooking and health',
+            inStock: true
+          },
+          {
+            _id: '6',
+            name: 'Milk (1L)',
+            price: 60,
+            category: 'Dairy',
+            image: '🥛',
+            description: 'Fresh pasteurized milk, rich in calcium',
+            inStock: true
+          },
+          {
+            _id: '7',
+            name: 'Bread (Pack)',
+            price: 40,
+            category: 'Bakery',
+            image: '🍞',
+            description: 'Soft and fresh bread, perfect for breakfast',
+            inStock: true
+          },
+          {
+            _id: '8',
+            name: 'Eggs (12)',
+            price: 90,
+            category: 'Dairy',
+            image: '🥚',
+            description: 'Farm fresh eggs, rich in protein',
+            inStock: true
+          }
+        ];
+        product = staticProducts.find(p => p._id === item.productId);
+      } else {
+        // This is a MongoDB ObjectId, try to find it in the database
+        try {
+          product = await Product.findById(item.productId);
+        } catch (error) {
+          console.error('Error finding product:', error);
+          product = null;
+        }
+      }
+      
       if (!product) {
         return res.status(400).json({
           success: false,
