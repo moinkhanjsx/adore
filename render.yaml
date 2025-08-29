@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: ruralconnect-backend
+    runtime: node
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        value: mongodb+srv://adore:Adore%40123@cluster0.14dxmwl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - key: JWT_SECRET
+        value: your_super_secret_jwt_key_here_make_it_long_and_secure
+      - key: CORS_ORIGIN
+        value: https://your-frontend-url.vercel.app
+    healthCheckPath: /api
+    autoDeploy: true
+    disk:
+      sizeGB: 1
