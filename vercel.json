@@ -16,7 +16,7 @@
     }
   ],
   "env": {
-    "VITE_API_URL": "https://ruralconnect-backend.onrender.com/api"
+    "VITE_API_URL": "https://adore-2fpo.onrender.com/api"
   },
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
