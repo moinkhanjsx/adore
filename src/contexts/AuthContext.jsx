@@ -27,14 +27,20 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
+      console.log('Attempting login with:', { email });
       const response = await authAPI.login({ email, password });
+      console.log('Login response:', response.data);
       const { token, user: userData } = response.data;
       setUser(userData);
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userData));
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.response?.data?.message || 'Login failed' };
+      console.error('Login error:', error);
+      return { 
+        success: false, 
+        error: error.response?.data?.message || error.message || 'Login failed' 
+      };
     }
   };
 
