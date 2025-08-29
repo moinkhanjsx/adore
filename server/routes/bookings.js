@@ -138,15 +138,26 @@ router.post('/', auth, async (req, res) => {
       });
     }
 
-    const booking = new Booking({
+    // Prepare the booking object
+    const bookingData = {
       userId,
       items: bookingItems,
       totalAmount,
       deliveryAddress,
       notes: notes || ''
-    });
-
-    await booking.save();
+    };
+    
+    console.log('Creating booking with data:', JSON.stringify(bookingData, null, 2));
+    
+    const booking = new Booking(bookingData);
+    
+    try {
+      await booking.save();
+      console.log('Booking saved successfully');
+    } catch (error) {
+      console.error('Error saving booking:', error);
+      throw error;
+    }
 
     res.status(201).json({
       success: true,
@@ -169,12 +180,22 @@ router.get('/user', auth, async (req, res) => {
   try {
     const userId = req.user._id;
     const bookings = await Booking.find({ userId })
-      .sort({ orderDate: -1 })
-      .populate('items.productId', 'name image');
+      .sort({ orderDate: -1 });
+    
+    // Since we can't use populate with string IDs, we need to manually format the response
+    const formattedBookings = bookings.map(booking => {
+      return {
+        ...booking.toObject(),
+        items: booking.items.map(item => {
+          // For static products, we already have all the data we need
+          return item;
+        })
+      };
+    });
 
     res.json({
       success: true,
-      data: bookings,
+      data: formattedBookings,
       message: 'Bookings retrieved successfully'
     });
   } catch (error) {
@@ -190,8 +211,8 @@ router.get('/user', auth, async (req, res) => {
 router.get('/:id', auth, async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id)
-      .populate('userId', 'name email phone')
-      .populate('items.productId', 'name image category');
+      .populate('userId', 'name email phone');
+      // Note: We don't populate items.productId anymore since it's a string
 
     if (!booking) {
       return res.status(404).json({
