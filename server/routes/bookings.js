@@ -67,9 +67,11 @@ router.post('/', auth, async (req, res) => {
     });
   } catch (error) {
     console.error('Booking creation error:', error);
+    console.error('Request body:', req.body);
     res.status(500).json({
       success: false,
-      message: 'Server error while creating booking'
+      message: 'Server error while creating booking',
+      error: error.message
     });
   }
 });

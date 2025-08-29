@@ -54,19 +54,23 @@ const CheckoutPage = () => {
     setLoading(true);
 
     try {
+      // Format data according to what the backend expects
       const bookingData = {
         items: cartItems.map(item => ({
           productId: item._id,
-          name: item.name,
-          price: item.price,
           quantity: item.quantity
         })),
-        totalAmount: getTotalPrice(),
-        deliveryAddress: orderData.deliveryAddress,
-        contactNumber: orderData.contactNumber,
+        deliveryAddress: {
+          street: orderData.deliveryAddress,
+          phone: orderData.contactNumber,
+          city: "",
+          state: "",
+          pincode: ""
+        },
         notes: orderData.notes
       };
 
+      console.log('Sending booking data:', bookingData);
       const response = await bookingAPI.createBooking(bookingData);
       
       setSuccess(true);
