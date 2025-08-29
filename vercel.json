@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "public": true,
   "builds": [
     {
       "src": "package.json",
@@ -21,6 +22,11 @@
   ],
   "env": {
     "VITE_API_URL": "https://adore-2fpo.onrender.com/api"
+  },
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
   },
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
