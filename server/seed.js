@@ -93,10 +93,13 @@ const sampleNews = [
 // Connect to MongoDB and seed data
 const seedDatabase = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ruralconnect', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    const mongoURI = process.env.MONGODB_URI;
+    if (!mongoURI) {
+      console.error('MONGODB_URI environment variable is not set');
+      process.exit(1);
+    }
+
+    await mongoose.connect(mongoURI);
     console.log('MongoDB connected for seeding');
 
     // Clear existing data
