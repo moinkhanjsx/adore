@@ -7,27 +7,112 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const { search, category } = req.query;
-    let query = {};
+    
+    // Static products data
+    const staticProducts = [
+      {
+        _id: '1',
+        name: 'Rice (5kg)',
+        price: 250,
+        category: 'Grains',
+        image: '🌾',
+        description: 'Premium quality rice, perfect for daily meals',
+        inStock: true,
+        createdAt: new Date()
+      },
+      {
+        _id: '2',
+        name: 'Wheat Flour (2kg)',
+        price: 120,
+        category: 'Grains',
+        image: '🌾',
+        description: 'Fresh wheat flour for making soft chapatis and breads',
+        inStock: true,
+        createdAt: new Date()
+      },
+      {
+        _id: '3',
+        name: 'Cooking Oil (1L)',
+        price: 180,
+        category: 'Cooking',
+        image: '🫒',
+        description: 'Pure cooking oil, ideal for all cooking needs',
+        inStock: true,
+        createdAt: new Date()
+      },
+      {
+        _id: '4',
+        name: 'Sugar (1kg)',
+        price: 45,
+        category: 'Sweeteners',
+        image: '🍚',
+        description: 'Refined sugar, perfect for sweetening your tea and desserts',
+        inStock: true,
+        createdAt: new Date()
+      },
+      {
+        _id: '5',
+        name: 'Salt (1kg)',
+        price: 25,
+        category: 'Spices',
+        image: '🧂',
+        description: 'Iodized salt, essential for cooking and health',
+        inStock: true,
+        createdAt: new Date()
+      },
+      {
+        _id: '6',
+        name: 'Milk (1L)',
+        price: 60,
+        category: 'Dairy',
+        image: '🥛',
+        description: 'Fresh pasteurized milk, rich in calcium',
+        inStock: true,
+        createdAt: new Date()
+      },
+      {
+        _id: '7',
+        name: 'Bread (Pack)',
+        price: 40,
+        category: 'Bakery',
+        image: '🍞',
+        description: 'Soft and fresh bread, perfect for breakfast',
+        inStock: true,
+        createdAt: new Date()
+      },
+      {
+        _id: '8',
+        name: 'Eggs (12)',
+        price: 90,
+        category: 'Dairy',
+        image: '🥚',
+        description: 'Farm fresh eggs, rich in protein',
+        inStock: true,
+        createdAt: new Date()
+      }
+    ];
 
-    // Build search query
+    let filteredProducts = staticProducts;
+
+    // Apply search filter
     if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { category: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
-      ];
+      filteredProducts = filteredProducts.filter(product =>
+        product.name.toLowerCase().includes(search.toLowerCase()) ||
+        product.category.toLowerCase().includes(search.toLowerCase()) ||
+        product.description.toLowerCase().includes(search.toLowerCase())
+      );
     }
 
-    // Filter by category
+    // Apply category filter
     if (category) {
-      query.category = { $regex: category, $options: 'i' };
+      filteredProducts = filteredProducts.filter(product =>
+        product.category.toLowerCase().includes(category.toLowerCase())
+      );
     }
-
-    const products = await Product.find(query).sort({ createdAt: -1 });
 
     res.json({
       success: true,
-      data: products,
+      data: filteredProducts,
       message: 'Products retrieved successfully'
     });
   } catch (error) {
@@ -42,7 +127,15 @@ router.get('/', async (req, res) => {
 // GET /api/products/categories - Get all categories
 router.get('/categories/list', async (req, res) => {
   try {
-    const categories = await Product.distinct('category');
+    // Static categories data
+    const categories = [
+      'Grains',
+      'Cooking',
+      'Sweeteners',
+      'Spices',
+      'Dairy',
+      'Bakery'
+    ];
     
     res.json({
       success: true,
