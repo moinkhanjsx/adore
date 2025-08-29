@@ -54,15 +54,14 @@ const CheckoutPage = () => {
     setLoading(true);
 
     try {
-      // Validate that product IDs are valid MongoDB ObjectIds (24 character hex strings)
-      // MongoDB ObjectIds are typically 24 character strings
+      // Check that all products in cart have an ID (but don't validate the format)
+      // This allows both MongoDB ObjectIds and simple string IDs for static products
       const invalidProductIds = cartItems.filter(item => {
-        const id = item._id?.toString();
-        return !id || !/^[0-9a-fA-F]{24}$/.test(id);
+        return !item._id;
       });
 
       if (invalidProductIds.length > 0) {
-        setError('Some products in your cart have invalid IDs. Please try refreshing the page or re-adding the products to your cart.');
+        setError('Some products in your cart are invalid. Please try refreshing the page or re-adding the products to your cart.');
         setLoading(false);
         return;
       }
@@ -83,6 +82,7 @@ const CheckoutPage = () => {
         notes: orderData.notes
       };
 
+      console.log('Cart items:', cartItems);
       console.log('Sending booking data:', bookingData);
       const response = await bookingAPI.createBooking(bookingData);
       
