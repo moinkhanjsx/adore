@@ -154,27 +154,34 @@ const Navbar = () => {
             >
               Home
             </Link>
-            <Link 
-              to="/#services" 
-              className="block px-3 py-2 text-gray-300 hover:text-white"
-              onClick={() => setIsMobileMenuOpen(false)}
+            <button 
+              onClick={() => handleHashNavigation('#services')}
+              className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white"
             >
               Services
-            </Link>
-            <Link 
-              to="/#products" 
-              className="block px-3 py-2 text-gray-300 hover:text-white"
-              onClick={() => setIsMobileMenuOpen(false)}
+            </button>
+            <button 
+              onClick={() => handleHashNavigation('#products')}
+              className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white"
             >
               Products
-            </Link>
-            <Link 
-              to="/#contact" 
-              className="block px-3 py-2 text-gray-300 hover:text-white"
-              onClick={() => setIsMobileMenuOpen(false)}
+            </button>
+            <button 
+              onClick={() => handleHashNavigation('#contact')}
+              className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white"
             >
               Contact
-            </Link>
+            </button>
+            <button 
+              onClick={() => {
+                setIsCartOpen(true);
+                setIsMobileMenuOpen(false);
+              }}
+              className="w-full text-left px-3 py-2 text-gray-300 hover:text-white flex items-center"
+            >
+              <ShoppingBag className="h-4 w-4 mr-2" />
+              Cart {getTotalItems() > 0 && <span className="ml-1 bg-green-600 text-xs rounded-full h-5 w-5 flex items-center justify-center">{getTotalItems()}</span>}
+            </button>
             {isAuthenticated ? (
               <>
                 <Link 
